@@ -1,6 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponseRedirect
 from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from rest_framework.parsers import JSONParser
 from midgard.models import Vols
 from midgard.serializers import VolSerializer, UserSerializer
@@ -15,6 +15,12 @@ from rest_framework import generics
 from rest_framework import status
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
+from django.contrib.auth import login, authenticate
+from django.shortcuts import render, redirect
+from django.template import RequestContext
+
+
+from .forms import SignUpForm
 User = get_user_model()
 # Create your views here.
 
@@ -140,3 +146,22 @@ class IndexView(TemplateView):
         context = {
         }
         return render(request, self.template_name, context)
+@csrf_protect
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return HttpResponseRedirect('/home')
+    else:
+        form = SignUpForm()
+        return render(request, 'signup.html', {'form': form})
+
+# def signin(request):
+#     if request == 'POST':
+
+#     else:
