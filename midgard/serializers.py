@@ -1,5 +1,6 @@
 from midgard.models import Vols, statut_choices, capteurs_choices
 from rest_framework import serializers
+from django.contrib.auth.models import User
 
 class VolSerializer(serializers.ModelSerializer):
     # # date_du_vol = serializers.DateTimeField(auto_now_add=True)
@@ -28,4 +29,11 @@ class VolSerializer(serializers.ModelSerializer):
     #     return instance
     class Meta:
         model = Vols
-        fields = ('id', 'vol', 'date_du_vol', 'nome', 'case', 'statut', 'capteurs')
+        fields = ('id', 'image', 'date_du_vol', 'nome', 'case', 'statut', 'capteurs')
+
+class UserSerializer(serializers.ModelSerializer):
+    vols = serializers.PrimaryKeyRelatedField(many=True, queryset=Vols.objects.all())
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'vols')

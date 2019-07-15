@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Midgard{% endblock %}</title>
+  <link href="{% static 'style.css' %}" rel="stylesheet">
+  <style>
+  header
+  {
+    background-color: #999900; 
+  }
+.navbar {
+  width: 100%;
+  background-color: #555;
+  overflow: auto;
+}
+
+.navbar a {
+  float: left;
+  padding: 12px;
+  color: white;
+  text-decoration: none;
+  font-size: 17px;
+  width: 22%; /* Four links of equal widths */
+  text-align: center;
+}
+
+.navbar a:hover {
+  background-color: #000;
+}
+
+.navbar a.active {
+  background-color: #4CAF50;
+}
+
+@media screen and (max-width: 500px) {
+  .navbar a {
+    float: none;
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+}
+</style>
+</head>
+<body>
+    <header>
+    <div class="menu">
+      <center><h1>MIDGARD</h1></center>
+      <div class="navbar">
+        <a class="active" href="/">Accueil</a> 
+        <a href="/user/">Mon Compte</a> 
+        <a href="/vol/">contact</a> 
+        <a href="/vol/">Deconnexion</a>
+      </div>
+      </nav>
+      </div>
+    </header>
+    <br><br>
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+</body>
+</html>

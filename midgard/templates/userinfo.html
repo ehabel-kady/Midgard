@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+<div>
+    {% for user in users %}
+    <div>
+        <h1>Nome: </h1> 
+        <span>{{user.first_name}}</span><span> {{user.last_name}}</span>
+    </div>
+    <div>
+        <h1>username: </h1> 
+        <span>{{user.username}}</span>
+    </div>
+    <div>
+        <h2> mail: </h2>
+        <span>{{ user.email}}
+    </div>
+    <div>
+        <h2> Nombre du vol: </h2>
+        <span>{{ user.vols}}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endblock  %}

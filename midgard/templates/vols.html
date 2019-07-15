@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+<div>
+    <div class="table-wrapper">
+        <table id="vols"> 
+            <th>
+                <td>No.</td>
+                <td>vol </td>
+                <td>Date_du_vol</td>
+                <td>Nome du projet</td>
+                <td>statut</td>
+                <td>capteurs</td>
+            </th>
+            {% for vol in vols %}
+            <tr>
+                <td></td>
+                <td>{{ vol.id }}</td>
+                <td><img src="{{MEDIA_URL}}{{vol.image}}"></td>
+                <td>{{ vol.date_du_vol }}</td>
+                <td>{{ vol.nome }}</td>
+                <td>{{ vol.statut }}</td>
+                <td>{{ vol.capteurs }}</td>
+            <tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock  %}
