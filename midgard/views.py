@@ -135,11 +135,11 @@ def LoginView(request):
         form = LoginForm()
         return render(request, 'login.html', {'form': form})
     else:
-        form = LoginForm(request.POST)
+        form = AuthenticationForm(request=request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
+            user = authenticate(email=username, password=password)
             if user:
                 login(request, user)
                 return redirect('/')
