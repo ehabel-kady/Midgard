@@ -28,3 +28,8 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = Profiles
         fields = ('username', 'full_name', 'email', 'password1', 'password2',)
+
+class ContactForm(forms.Form):
+    from_email = forms.EmailField(required=True)
+    subject = forms.CharField(required=True)
+    message = forms.CharField(required=True, widget=forms.Textarea)

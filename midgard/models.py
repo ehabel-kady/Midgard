@@ -68,3 +68,12 @@ class Profiles(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+class Messages(models.Model):
+    created_at = models.DateTimeField(auto_now=True)
+    title = models.CharField(max_length=50, default='', blank=True)
+    message_body = models.TextField(default='')
+    owner = models.ForeignKey('Profiles', related_name='messages', on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ('created_at',)

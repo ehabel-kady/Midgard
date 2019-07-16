@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponseRedirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from rest_framework.parsers import JSONParser
 from midgard.models import Vols
@@ -18,29 +18,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.template import RequestContext
+from django.core.mail import send_mail, BadHeaderError
 
-
-from .forms import SignUpForm
+from .forms import SignUpForm, ContactForm
 User = get_user_model()
 # Create your views here.
 
-# @csrf_exempt
-# def vol_list(request):
-#     """
-#     List all code snippets, or create a new snippet.
-#     """
-#     if request.method == 'GET':
-#         vols = Vols.objects.all()
-#         serializer = VolSerializer(vols, many=True)
-#         return JsonResponse(serializer.data, safe=False)
-
-#     elif request.method == 'POST':
-#         data = JSONParser().parse(request)
-#         serializer = VolSerializer(data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return JsonResponse(serializer.data, status=201)
-#         return JsonResponse(serializer.errors, status=400)
 class VolList(APIView):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -86,31 +69,7 @@ class VolDetail(APIView):
     # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                       IsOwnerOrReadOnly,)
-# @csrf_exempt
-# def vol_detail(request, pk):
-#     """
-#     Retrieve, update or delete a code snippet.
-#     """
-#     try:
-#         vol = Vols.objects.get(pk=pk)
-#     except Vols.DoesNotExist:
-#         return HttpResponse(status=404)
 
-#     if request.method == 'GET':
-#         serializer = VolSerializer(vol)
-#         return JsonResponse(serializer.data)
-
-#     elif request.method == 'PUT':
-#         data = JSONParser().parse(request)
-#         serializer = VolSerializer(vol, data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return JsonResponse(serializer.data)
-#         return JsonResponse(serializer.errors, status=400)
-
-#     elif request.method == 'DELETE':
-#         vol.delete()
-#         return HttpResponse(status=204)
 
 class VolsView(TemplateView):
     template_name = "vols.html"
@@ -161,7 +120,23 @@ def signup(request):
         form = SignUpForm()
         return render(request, 'signup.html', {'form': form})
 
-# def signin(request):
-#     if request == 'POST':
+def contact(request):
+    if request.method == 'GET':
+        form = ContactForm()
+    else:
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data['subject']
+            from_email = form.cleaned_data['from_email']
+            message = form.cleaned_data['message']
+            try:
+                send_mail(subject, message, from_email, ['ehabwork0@gmail'])
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect('thanks')
+        else:
+            return HttpResponse('Invalid.')
+    return render(request, "contact.html", {'form': form})
 
-#     else:
+def successView(request):
+    return HttpResponse('Success! Thank you for your message.')
