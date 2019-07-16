@@ -1,5 +1,7 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from rest_framework.parsers import JSONParser
 from midgard.models import Vols
@@ -19,8 +21,10 @@ from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.template import RequestContext
 from django.core.mail import send_mail, BadHeaderError
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .forms import SignUpForm, ContactForm, LoginForm
+from django.contrib.auth import logout, login
 
-from .forms import SignUpForm, ContactForm
 User = get_user_model()
 # Create your views here.
 
@@ -73,9 +77,11 @@ class VolDetail(APIView):
 
 class VolsView(TemplateView):
     template_name = "vols.html"
-
+    
     def get(self,request, *args, **kwargs):
-        vols = Vols.objects.all().order_by('id')
+        if request.user is None:
+            return redirect('/')
+        vols = Vols.objects.filter(owner=request.user)
         context = {
             'vols': vols,
         }
@@ -92,11 +98,13 @@ class UserDetail(generics.RetrieveAPIView):
 class UserInfo(generics.RetrieveAPIView):
     template_name = "userinfo.html"
     def get(self,request, *args, **kwargs):
-        queryset = User.objects.all()
+        if request.user is None:
+            return HttpResponse('Please Login First')
         context = {
-            'users': queryset,
+            'users': request.user,
+             'count':Vols.objects.filter(owner=request.user).count()
         }
-        print(queryset[1].vols)
+        # print(queryset[1].vols)
         return render(request, self.template_name, context)
 class IndexView(TemplateView):
     template_name = "home.html"
@@ -113,13 +121,36 @@ def signup(request):
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
+            user = form.save()
             login(request, user)
-            return HttpResponseRedirect('/home')
+            return redirect('home')
+        else:
+            return render(request, 'signup.html', {'form': form})
+
     else:
         form = SignUpForm()
         return render(request, 'signup.html', {'form': form})
-
+def LoginView(request):
+    if request.method == 'GET':
+        form = LoginForm()
+        return render(request, 'login.html', {'form': form})
+    else:
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user:
+                login(request, user)
+                return redirect('/')
+            else:
+                return HttpResponse('Invalid Username or Password')
+        else:
+            return render(request,'login.html',{'form':form})
+def LogoutView(request):
+    logout(request)
+    return redirect('home')
+    
 def contact(request):
     if request.method == 'GET':
         form = ContactForm()
@@ -135,7 +166,8 @@ def contact(request):
                 return HttpResponse('Invalid header found.')
             return redirect('thanks')
         else:
-            return HttpResponse('Invalid.')
+            form = ContactForm()
+            return render(request, "contact.html", {'form': form})
     return render(request, "contact.html", {'form': form})
 
 def successView(request):

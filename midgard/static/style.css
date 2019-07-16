@@ -44,3 +44,8 @@
   tbody tr td:first-of-type {
     background-color: #eee;
   }
+
+  .home
+  {
+    background-image: url("tmp-img/trees.jpg")
+  }

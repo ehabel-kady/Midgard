@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'rest_framework',
+   'rest_framework',
     'midgard.apps.MidgardConfig',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
