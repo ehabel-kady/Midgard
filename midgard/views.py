@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from rest_framework.parsers import JSONParser
@@ -114,9 +114,9 @@ class VolDetail(APIView):
 
 class VolsView(TemplateView):
     template_name = "vols.html"
-
+    
     def get(self,request, *args, **kwargs):
-        vols = Vols.objects.all().order_by('id')
+        vols = Vols.objects.filter(owner=request.user)
         context = {
             'vols': vols,
         }
@@ -133,11 +133,12 @@ class UserDetail(generics.RetrieveAPIView):
 class UserInfo(generics.RetrieveAPIView):
     template_name = "userinfo.html"
     def get(self,request, *args, **kwargs):
-        queryset = User.objects.all()
+        
         context = {
-            'users': queryset,
+            'users': request.user,
+             'count':Vols.objects.filter(owner=request.user).count()
         }
-        print(queryset[1].vols)
+        # print(queryset[1].vols)
         return render(request, self.template_name, context)
 class IndexView(TemplateView):
     template_name = "home.html"
@@ -154,9 +155,12 @@ def signup(request):
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
+            user = form.save()
             login(request, user)
-            return HttpResponseRedirect('/home')
+            return redirect('home')
+        else:
+            return render(request, 'signup.html', {'form': form})
+
     else:
         form = SignUpForm()
         return render(request, 'signup.html', {'form': form})

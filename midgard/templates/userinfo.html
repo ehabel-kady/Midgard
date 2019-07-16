@@ -2,8 +2,9 @@
 {% load staticfiles %}
 {% block content %}
 <div>
-    {% for user in users %}
+    
     <div>
+        {% if user %}
         <h1>Nome: </h1> 
         <span>{{user.first_name}}</span><span> {{user.last_name}}</span>
     </div>
@@ -17,8 +18,8 @@
     </div>
     <div>
         <h2> Nombre du vol: </h2>
-        <span>{{ user.vols}}</span>
+        <span>{{ count }}</span>
     </div>
-    {% endfor %}
+    {% endif %}
 </div>
 {% endblock  %}
