@@ -98,8 +98,10 @@ class UserDetail(generics.RetrieveAPIView):
 class UserInfo(generics.RetrieveAPIView):
     template_name = "userinfo.html"
     def get(self,request, *args, **kwargs):
-        if request.user is None:
+        if not request.user:
+            print("no user")
             return HttpResponse('Please Login First')
+        print('there is user')
         context = {
             'users': request.user,
              'count':Vols.objects.filter(owner=request.user).count()
@@ -132,18 +134,22 @@ def signup(request):
         return render(request, 'signup.html', {'form': form})
 def LoginView(request):
     if request.method == 'GET':
-        form = LoginForm()
+        form = AuthenticationForm()
         return render(request, 'login.html', {'form': form})
     else:
-        form = AuthenticationForm(request=request, data=request.POST)
+        print("entered in authenticate")
+        form = AuthenticationForm(data=request.POST)
         if form.is_valid():
+            print("valid form")
             username = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
             user = authenticate(email=username, password=password)
             if user:
+                print("Found user")
                 login(request, user)
                 return redirect('/')
             else:
+                print("Invalid user")
                 return HttpResponse('Invalid Username or Password')
         else:
             return render(request,'login.html',{'form':form})

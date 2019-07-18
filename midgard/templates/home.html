@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
-{% load staticfiles %}
+{% load static %}
 {% block title %} Homepage {% endblock %}
 {% block content %}
-    <div class="home"> 
-        
+    <div class="main-page" style="display: in-block; position: center; padding: 200px;">
+        <img src="{% static 'tmp-img/trees.jpg'%}" style="padding: 50px; width: 100px; height: 100px;">
+        <img src="{% static 'tmp-img/trees.jpg'%}" style="padding: 50px; width: 100px; height: 100px;">
+        <img src="{% static 'tmp-img/trees.jpg'%}" style="padding: 50px; width: 100px; height: 100px;">
+        <img src="{% static 'tmp-img/trees.jpg'%}" style="padding: 50px; width: 100px; height: 100px;">
     </div>
 {% endblock %}

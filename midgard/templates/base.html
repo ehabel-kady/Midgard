@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-{% load staticfiles %}
+{% load static %}
 <html>
 <head>
   <meta charset="utf-8">
   <title>{% block title %}Midgard{% endblock %}</title>
-  <link href="{% static 'style.css' %}" rel="stylesheet">
+  <link href="{% static "css/style.css" %}" type="text/css" rel="stylesheet">
   <style>
   header
   {
-    background-color: #999900; 
+    background-color: #DAA520; 
   }
 .navbar {
   width: 100%;
@@ -16,6 +16,10 @@
   overflow: auto;
 }
 
+body
+{
+  background: #b2b2b2;
+}
 .navbar a {
   float: left;
   padding: 12px;
@@ -34,6 +38,14 @@
   background-color: #4CAF50;
 }
 
+ .logo
+  {
+    height: 100px;
+    width: 100px;
+    padding: 10px;
+    
+  }
+
 @media screen and (max-width: 500px) {
   .navbar a {
     float: none;
@@ -42,12 +54,58 @@
     text-align: left;
   }
 }
+
+.myButton {
+	background-color:#44c767;
+	-moz-border-radius:28px;
+	-webkit-border-radius:28px;
+	border-radius:28px;
+	border:1px solid #18ab29;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	padding:16px 31px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+  text-align: right;
+}
+.myButton:hover {
+	background-color:#5cbf2a;
+}
+.myButton:active {
+	{% comment %} position:relative; {% endcomment %}
+	top:1px;
+}
+.header1
+{
+  display: inline-block;
+}
+.reg
+{
+  float: right;
+  padding-top: 50px;
+  padding-left: 1000px;
+}
 </style>
 </head>
 <body>
     <header>
     <div class="menu">
-      <center><h1>MIDGARD</h1></center>
+      <div class="header1">
+        <img src="{% static 'tmp-img/Final-01.png'%}" alt="" class="logo">
+        <div class="reg">
+          <a href="/signup/" class="myButton">signUp</a>
+
+            {% if user.is_authenticated %}
+              <a href="/logout/" class="myButton">Logout</a>
+            {% else %}
+              <a href="/login/" class="myButton">Login</a>
+              {% endif %}
+        </div>
+        
+      </div>
       <div class="navbar">
         <a class="active" href="/">Accueil</a> 
         <a href="/user/">Mon Compte</a> 

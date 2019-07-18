@@ -4,14 +4,17 @@
 <div>
     <div class="table-wrapper">
         <table id="vols"> 
-            <th>
-                <td>No.</td>
-                <td>vol </td>
-                <td>Date_du_vol</td>
-                <td>Nome du projet</td>
-                <td>statut</td>
-                <td>capteurs</td>
-            </th>
+            <thead>
+            <tr>
+                <th>No.</td>
+                <th>vol </td>
+                <th>Date_du_vol</td>
+                <th>Nome du projet</td>
+                <th>statut</td>
+                <th>capteurs</td>
+            </tr>
+            </thead>
+            <tbody>
             {% for vol in vols %}
             <tr>
                 <td></td>
@@ -23,6 +26,7 @@
                 <td>{{ vol.capteurs }}</td>
             <tr>
             {% endfor %}
+            </tbody>
         </table>
     </div>
 </div>

@@ -47,5 +47,9 @@
 
   .home
   {
-    background-image: url("tmp-img/trees.jpg")
+    background-image: url("{% static 'tmp-img/trees.jpg'%}")
   }
+
+
+
+  
